@@ -17,19 +17,7 @@
         <h1 class="h1">{% if entry.id and entry.name %}Sending list - {{ entry.name }} {% endif %}</h1>
         <a href="{{ path('sending_list_edit', {'id': entry.id}) }}" class="btn pb-0 h-10 btn-primary">Edit</a>
     </div>
-
-    <h1 class="h3 mb-3">Template</h1>
-    <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
-        {{ entry.template }}
-        {% if entry.template is null %}No template defined{% endif %}
-    </div>
-    <div class="flex -mt-2">
-        <span class="text-slate-500 text-sm block mr-1 text-right w-full">Usable keywords : </span>
-        {% for col in columns %}
-            <span class="text-slate-500 text-sm block mr-2"> {{ '{{' ~ col ~ '}}' }}</span>
-        {% endfor %}
-    </div>
-
+    
     <h1 class="h3 mb-3">File</h1>
     <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
         <p>{{ entry.fileName }}</p>
