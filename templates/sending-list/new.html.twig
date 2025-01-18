@@ -1,0 +1,33 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit sending list - {{ entry.name }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <h1 class="h1 mb-6">{% if entry.id and entry.name %}Edit sending list - {{ entry.name }} {% else %} Create sending list {% endif %}</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_row(form.name) }}
+
+        {{ form_row(form.template) }}
+        <div class="flex -mt-2">
+            <span class="text-slate-500 text-sm block mr-1 text-right w-full">Usable keywords : </span>
+            {% for col in columns %}
+                <span class="text-slate-500 text-sm block mr-2"> {{ '{{' ~ col ~ '}}' }}</span>
+            {% endfor %}
+        </div>
+
+        {{ form_row(form.file, { 'attr': { 'class': 'mb-6' } }) }}
+
+        {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}

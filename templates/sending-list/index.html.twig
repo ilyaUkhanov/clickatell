@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sending list{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+    {{ parent() }}
+    <h1 class="h1 mb-5">Sending Lists</h1>
+
+    {% for entry in sending_lists %}
+        <a href="{{ path('sending_list_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
+            <p class="h3 text-slate-800">{{ entry.name }}</p>
+            <button class="btn btn-primary">See</button>
+        </a>
+    {% endfor %}
+{% endblock %}
