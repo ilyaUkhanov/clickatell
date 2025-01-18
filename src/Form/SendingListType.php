@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -20,15 +21,18 @@ class SendingListType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ]
             ])
-            ->add('template', TextareaType::class)
             ->add('file', VichFileType::class, [
                 'required' => true,
                 'allow_delete' => false,
                 'download_uri' => false,
                 'asset_helper' => true,
                 'constraints' => [
-                    new ConstraintCSVColumn($column = "phone")
+                    new ConstraintCSVColumn($column = "phone"),
+                    new NotBlank(),
                 ]
             ])
             ->add('submit', SubmitType::class)

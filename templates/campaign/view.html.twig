@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% from 'macros.html.twig' import bytesToSize %}
+
+{% block title %}Campaign - {{ entry.name }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="flex justify-between mb-6">
+        <h1 class="h1">{% if entry.id and entry.name %}Campaign - {{ entry.name }} {% endif %}</h1>
+        <a href="{{ path('campaign_edit_one', {'id': entry.id}) }}" class="btn pb-0 h-10 btn-primary">Edit</a>
+    </div>
+
+    <h1 class="h3 mb-3">Sending list</h1>
+    <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
+        {{ entry.sendingList.name }}
+    </div>
+
+    <h1 class="h3 mb-3">Template</h1>
+    <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
+        {{ entry.template }}
+        {% if entry.template is null %}No template defined{% endif %}
+    </div>
+
+{% endblock %}

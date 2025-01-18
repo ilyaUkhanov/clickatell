@@ -14,8 +14,10 @@
     </head>
     <body>
         <nav>
-            <div class="p-3 !pl-10 bg-slate-700">
-                <a href="{{ path('sending_list') }}" class="btn btn-dark">Home</a>
+            <div class="flex w-full p-3 !pl-10 bg-slate-700">
+                <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Home</a>
+                <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Sending lists</a>
+                <a href="{{ path('campaign') }}" class="btn btn-dark block mr-2">Campaigns</a>
             </div>
         </nav>
         <div class="p-10">

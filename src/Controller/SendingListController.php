@@ -68,11 +68,13 @@ class SendingListController extends AbstractController
             return $this->redirectToRoute('sending_list');
         }
 
+        $file = $sendingList->getFile();
+        $columns = $file ? $serviceCSV->getColumns($file->getContent()) : [];
 
         return $this->render('sending-list/new.html.twig', [
             'form' => $form,
             'entry' => $sendingList,
-            'columns' => $serviceCSV->getColumns($sendingList->getFile()->getContent()),
+            'columns' => $columns
         ]);
     }
 

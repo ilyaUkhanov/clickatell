@@ -1,0 +1,26 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit campaign - {{ entry.name }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <h1 class="h1 mb-6">{% if entry.id and entry.name %}Edit campaign - {{ entry.name }} {% else %} Create campaign {% endif %}</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_label(form.sendingList) }}
+        <div class="flex justify-between items-center mb-3">
+            {{ form_widget(form.sendingList, { 'attr': { 'class': 'w-full mr-2' } }) }}
+            <a class="btn btn-success w-10" href="{{ path('sending_list_edit', {'id': 'new'}) }}">Add</a>
+        </div>
+        {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}

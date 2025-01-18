@@ -14,12 +14,12 @@
 {% block body %}
     {{ parent() }}
     <div class="flex justify-between items-center mb-5">
-        <h1 class="h1">Sending Lists</h1>
-        <a class="btn btn-success h-10" href="{{ path('sending_list_edit', { 'id': 'new' }) }}">Create</a>
+        <h1 class="h1">Campaigns</h1>
+        <a class="btn btn-success h-10" href="{{ path('campaign_edit_one', { 'id': 'new' }) }}">Create</a>
     </div>
 
-    {% for entry in sending_lists %}
-        <a href="{{ path('sending_list_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
+    {% for entry in campaigns %}
+        <a href="{{ path('campaign_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
             <p class="h3 text-slate-800">{{ entry.name }}</p>
             <button class="btn btn-primary">See</button>
         </a>

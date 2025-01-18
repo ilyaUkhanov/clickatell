@@ -48,15 +48,6 @@ class ServiceCSV
         $serializer = new Serializer([new ObjectNormalizer()], [$encoder]);
         $decodedData = $serializer->decode($cleanData, 'csv');
 
-        dump($cleanData);
-
         return $decodedData;
-    }
-
-    public function encodeCSV($data): string
-    {
-        $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-        $file = $serializer->encode($data, 'csv');
-        return $file;
     }
 }

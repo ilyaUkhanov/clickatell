@@ -18,14 +18,6 @@
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_row(form.name) }}
 
-        {{ form_row(form.template) }}
-        <div class="flex -mt-2">
-            <span class="text-slate-500 text-sm block mr-1 text-right w-full">Usable keywords : </span>
-            {% for col in columns %}
-                <span class="text-slate-500 text-sm block mr-2"> {{ '{{' ~ col ~ '}}' }}</span>
-            {% endfor %}
-        </div>
-
         {{ form_row(form.file, { 'attr': { 'class': 'mb-6' } }) }}
 
         {{ form_row(form.submit) }}

@@ -23,15 +23,17 @@
         {{ entry.template }}
         {% if entry.template is null %}No template defined{% endif %}
     </div>
+    <div class="flex -mt-2">
+        <span class="text-slate-500 text-sm block mr-1 text-right w-full">Usable keywords : </span>
+        {% for col in columns %}
+            <span class="text-slate-500 text-sm block mr-2"> {{ '{{' ~ col ~ '}}' }}</span>
+        {% endfor %}
+    </div>
 
     <h1 class="h3 mb-3">File</h1>
     <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
         <p>{{ entry.fileName }}</p>
         <p>{{ bytesToSize(entry.fileSize) }}</p>
     </div>
-
-    {% for col in columns %}
-        <p>{{ col }}</p>
-    {% endfor %}
 
 {% endblock %}

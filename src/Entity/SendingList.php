@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\SendingListRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: SendingListRepository::class)]
 #[Vich\Uploadable]
-class SendingList
+class SendingList implements Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,9 +21,6 @@ class SendingList
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
-
-    #[ORM\Column(type: "text", length: 65535, nullable: true)]
-    private ?string $template = null;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'sending_lists', fileNameProperty: 'fileName', size: 'fileSize')]
@@ -34,6 +34,17 @@ class SendingList
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Campaign>
+     */
+    #[ORM\OneToMany(targetEntity: Campaign::class, mappedBy: 'sendingList', orphanRemoval: true)]
+    private Collection $campaigns;
+
+    public function __construct()
+    {
+        $this->campaigns = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -50,16 +61,6 @@ class SendingList
         $this->name = $name;
 
         return $this;
-    }
-
-    public function getTemplate(): ?string
-    {
-        return $this->template;
-    }
-
-    public function setTemplate(?string $template): void
-    {
-        $this->template = $template;
     }
 
     /**
@@ -105,5 +106,80 @@ class SendingList
     public function getFileSize(): ?int
     {
         return $this->fileSize;
+    }
+
+    /**
+     * @return Collection<int, Campaign>
+     */
+    public function getCampaigns(): Collection
+    {
+        return $this->campaigns;
+    }
+
+    public function addCampaign(Campaign $campaign): static
+    {
+        if (!$this->campaigns->contains($campaign)) {
+            $this->campaigns->add($campaign);
+            $campaign->setSendingList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCampaign(Campaign $campaign): static
+    {
+        if ($this->campaigns->removeElement($campaign)) {
+            // set the owning side to null (unless already changed)
+            if ($campaign->getSendingList() === $this) {
+                $campaign->setSendingList(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function serialize(): ?string
+    {
+        return serialize(array(
+            $this->id,
+            $this->fileName,
+            $this->fileSize,
+            $this->name,
+            $this->updatedAt
+        ));
+    }
+
+    public function unserialize(string $data): void
+    {
+        $treated = unserialize($data);
+        list(
+            $this->id,
+            $this->fileName,
+            $this->fileSize,
+            $this->name,
+            $this->updatedAt
+        ) = $treated;
+    }
+
+    public function __serialize(): array
+    {
+        return array(
+            $this->id,
+            $this->fileName,
+            $this->fileSize,
+            $this->name,
+            $this->updatedAt
+        );
+    }
+
+    public function __unserialize(array $data): void
+    {
+        list(
+            $this->id,
+            $this->fileName,
+            $this->fileSize,
+            $this->name,
+            $this->updatedAt
+            ) = $data;
     }
 }
