@@ -23,6 +23,15 @@
         {{ entry.sendingList.name }}
     </div>
 
+    <h1 class="h3">State</h1>
+    <div class="mb-3">
+        <span class="text-slate-800 {% if entry.state.value == 'pending' %} text-yellow-500
+                                            {% elseif entry.state.value == 'cancelled' %} text-red-500
+                                            {% elseif entry.state.value == 'launched' %} text-blue-500 {% endif %}">
+                    {{ entry.state.value }}
+        </span>
+    </div>
+
     <h1 class="h3 mb-3">Template</h1>
     <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
         {{ entry.template }}

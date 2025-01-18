@@ -25,6 +25,10 @@
             {% endfor %}
         </div>
 
+        <div class="flex mb-6">
+            {{ form_row(form.state) }}
+        </div>
+
         {{ form_row(form.submit) }}
     {{ form_end(form) }}
 {% endblock %}

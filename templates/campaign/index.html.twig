@@ -20,8 +20,16 @@
 
     {% for entry in campaigns %}
         <a href="{{ path('campaign_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
-            <p class="h3 text-slate-800">{{ entry.name }}</p>
-            <button class="btn btn-primary">See</button>
+            <div class="">
+                <p class="h3 text-slate-800">{{ entry.name }}</p>
+                <span>State : </span>
+                <span class="text-slate-800 {% if entry.state.value == 'pending' %} text-yellow-500
+                                            {% elseif entry.state.value == 'cancelled' %} text-red-500
+                                            {% elseif entry.state.value == 'launched' %} text-blue-500 {% endif %}">
+                    {{ entry.state.value }}
+                </span>
+            </div>
+            <button class="btn btn-primary h-12">See</button>
         </a>
     {% endfor %}
 {% endblock %}

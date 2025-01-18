@@ -5,6 +5,12 @@ namespace App\Entity;
 use App\Repository\CampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+enum State: string {
+    case Pending = 'pending';
+    case Launched = 'launched';
+    case Cancelled = 'cancelled';
+}
+
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
 class Campaign
 {
@@ -15,6 +21,9 @@ class Campaign
 
     #[ORM\Column(length: 65535)]
     private ?string $template = null;
+
+    #[ORM\Column(type: 'string', enumType: State::class)]
+    public State $state = State::Pending;
 
     #[ORM\ManyToOne(inversedBy: 'campaigns')]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,5 +71,15 @@ class Campaign
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getState(): State
+    {
+        return $this->state;
+    }
+
+    public function setState(State $state): void
+    {
+        $this->state = $state;
     }
 }
