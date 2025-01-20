@@ -4,6 +4,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('script/sending-list/script.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -21,7 +22,15 @@
     {% for entry in sending_lists %}
         <a href="{{ path('sending_list_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
             <p class="h3 text-slate-800">{{ entry.name }}</p>
-            <button class="btn btn-primary">See</button>
+            <div>
+                <button class="btn btn-primary">See</button>
+                <button id="btn-delete"
+                        data-href="{{ path('sending_list_delete', { 'id': entry.id }) }}"
+                        class="btn btn-danger h-10">
+                    {{ ux_icon('ion:trash-outline', {class: 'w-4 h-4'}) }}
+                </button>
+            </div>
+
         </a>
     {% endfor %}
 {% endblock %}

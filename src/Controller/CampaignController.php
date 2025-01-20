@@ -10,9 +10,7 @@ use App\Repository\SendingListRepository;
 use App\Service\ServiceClickatell;
 use App\Service\ServiceCSV;
 use App\Service\ServiceSendingList;
-use App\Service\ServiceSMS;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\Proxy;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -143,11 +141,12 @@ class CampaignController extends AbstractController
         return $this->json("OK");
     }
 
-    #[Route('/campaign/{id}', name: 'campaign_delete', methods: ['DELETE'])]
+    #[Route('/campaign/{id}/delete', name: 'campaign_delete', methods: ['GET'])]
     public function delete(Campaign $campaign, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($campaign);
+        $entityManager->flush();
 
-        return $this->json("OK");
+        return $this->redirectToRoute('campaign');
     }
 }

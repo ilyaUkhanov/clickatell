@@ -3,17 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Campaign;
+use App\Entity\SendingList;
+use App\Form\SendingListType;
 use App\Repository\SendingListRepository;
 use App\Service\ServiceCSV;
-use App\Service\ServiceSMS;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\SendingList;
-use App\Form\SendingListType;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 class SendingListController extends AbstractController
@@ -85,11 +84,12 @@ class SendingListController extends AbstractController
         return $downloadHandler->downloadObject($sendingList, 'file', null, true, false);
     }
 
-    #[Route('/sending-list/{id}', name: 'sending_list_delete', methods: ['DELETE'])]
-    public function delete(Campaign $campaign, EntityManagerInterface $entityManager): Response
+    #[Route('/sending-list/{id}/delete', name: 'sending_list_delete', methods: ['GET'])]
+    public function delete(SendingList $sendingList, EntityManagerInterface $entityManager): Response
     {
-        $entityManager->remove($campaign);
+        $entityManager->remove($sendingList);
+        $entityManager->flush();
 
-        return $this->json("OK");
+        return $this->redirectToRoute('sending_list');
     }
 }

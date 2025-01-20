@@ -4,12 +4,12 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('script/campaign/script.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
-
 
 {% block body %}
     {{ parent() }}
@@ -29,7 +29,14 @@
                     {{ entry.state.value }}
                 </span>
             </div>
-            <button class="btn btn-primary h-12">See</button>
+            <div>
+                <button class="btn btn-primary h-10">See</button>
+                <button id="btn-delete"
+                        data-href="{{ path('campaign_delete', { 'id': entry.id }) }}"
+                        class="btn btn-danger h-10">
+                    {{ ux_icon('ion:trash-outline', {class: 'w-4 h-4'}) }}
+                </button>
+            </div>
         </a>
     {% endfor %}
 {% endblock %}
