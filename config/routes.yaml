@@ -3,3 +3,6 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+default_homepage:
+    path: /
+    controller: App\Controller\SendingListController::index
