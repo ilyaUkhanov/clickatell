@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CampaignRepository;
+use DateInterval;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
@@ -26,6 +28,24 @@ class Campaign
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTimeInterface $dateStart = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTimeInterface $dateEnd = null;
+
+    #[ORM\Column]
+    private ?int $cursor = 0;
+
+    public function __construct()
+    {
+        $this->cursor = 0;
+        $this->dateStart = new \DateTimeImmutable();
+        $this->dateEnd = new \DateTimeImmutable();
+        $this->dateEnd = $this->dateEnd->add(new DateInterval('P7D'));
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -40,6 +60,11 @@ class Campaign
     {
         $this->template = $template;
 
+        // Reset cursor
+        if($this->state === State::Pending || $this->state === State::Launched) {
+            $this->setCursor(0);
+        }
+
         return $this;
     }
 
@@ -51,6 +76,10 @@ class Campaign
     public function setSendingList(?SendingList $sendingList): static
     {
         $this->sendingList = $sendingList;
+        // Reset cursor
+        if($this->state === State::Pending || $this->state === State::Launched) {
+            $this->setCursor(0);
+        }
 
         return $this;
     }
@@ -75,5 +104,41 @@ class Campaign
     public function setState(State $state): void
     {
         $this->state = $state;
+    }
+
+    public function getDateStart(): ?\DateTimeInterface
+    {
+        return $this->dateStart;
+    }
+
+    public function setDateStart(\DateTimeInterface $dateStart): static
+    {
+        $this->dateStart = $dateStart;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->dateEnd;
+    }
+
+    public function setDateEnd(\DateTimeInterface $dateEnd): static
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    public function getCursor(): ?int
+    {
+        return $this->cursor;
+    }
+
+    public function setCursor(int $cursor): static
+    {
+        $this->cursor = $cursor;
+
+        return $this;
     }
 }

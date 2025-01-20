@@ -23,9 +23,10 @@
             <div class="">
                 <p class="h3 text-slate-800">{{ entry.name }}</p>
                 <span>State : </span>
-                <span class="text-slate-800 {% if entry.state.value == 'pending' %} text-yellow-500
-                                            {% elseif entry.state.value == 'cancelled' %} text-red-500
-                                            {% elseif entry.state.value == 'launched' %} text-blue-500 {% endif %}">
+                <span class="text-slate-800 {% if entry.state.value == 'pending' %} !text-yellow-500
+                                            {% elseif entry.state.value == 'cancelled' %} !text-red-500
+                                            {% elseif entry.state.value == 'finished' %} !text-green-500
+                                            {% elseif entry.state.value == 'launched' %} !text-blue-500 {% endif %}">
                     {{ entry.state.value }}
                 </span>
             </div>

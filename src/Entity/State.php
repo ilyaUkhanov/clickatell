@@ -7,4 +7,5 @@ enum State: string
     case Pending = 'pending';
     case Launched = 'launched';
     case Cancelled = 'cancelled';
+    case Finished = 'finished';
 }
