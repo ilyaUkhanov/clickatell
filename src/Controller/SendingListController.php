@@ -78,24 +78,6 @@ class SendingListController extends AbstractController
         ]);
     }
 
-    #[Route('/sending-list/{id}/send', name: 'sending_list_send', methods: ['GET'])]
-    public function send($id, ServiceSMS $serviceSMS, ServiceCSV $serviceCSV, SendingListRepository $repo): Response
-    {
-        if(is_numeric($id)) {
-            $sendingList = $repo->find($id);
-        }
-        else {
-            throw new NotFoundHttpException();
-        }
-
-        $decoded = $serviceCSV->decodeCSV($sendingList->getFile());
-        dump($sendingList->getFile()->getContent());
-        dump($decoded);
-        dump($serviceCSV->getColumns($sendingList->getFile()->getContent()));
-
-        return $this->json("OK");
-    }
-
     #[Route('/sending-list/{id}/download', name: 'sending_list_download', methods: ['GET'])]
     public function openSendingListFile(SendingList $sendingList, DownloadHandler $downloadHandler): Response
     {

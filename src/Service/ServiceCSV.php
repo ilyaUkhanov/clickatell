@@ -38,7 +38,7 @@ class ServiceCSV
         return $data;
     }
 
-    public function decodeCSV(File $file,)
+    public function decodeCSV(File $file)
     {
         $data = $file->getContent();
         $cleanData = $this->cleanupCSV($data);

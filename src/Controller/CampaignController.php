@@ -7,7 +7,10 @@ use App\Form\CampaignOneType;
 use App\Form\CampaignTwoType;
 use App\Repository\CampaignRepository;
 use App\Repository\SendingListRepository;
+use App\Service\ServiceClickatell;
 use App\Service\ServiceCSV;
+use App\Service\ServiceSendingList;
+use App\Service\ServiceSMS;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Proxy;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +19,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class CampaignController extends AbstractController
 {
@@ -76,7 +84,9 @@ class CampaignController extends AbstractController
     }
 
     #[Route('/campaign/edit/stage-two', name: 'campaign_edit_two', methods: ['GET', 'POST'])]
-    public function edit_two(Request $request, CampaignRepository $campaignRepository, EntityManagerInterface $entityManager, SendingListRepository $sendingListRepository, ServiceCSV $serviceCSV): Response
+    public function edit_two(Request $request, CampaignRepository $campaignRepository,
+                             EntityManagerInterface $entityManager, SendingListRepository $sendingListRepository,
+                             ServiceCSV $serviceCSV, ServiceSendingList $serviceSendingList): Response
     {
         /** @var Campaign $campaign */
         $campaign = $this->requestStack->getSession()->get('campaign-form-stage-one');
@@ -96,12 +106,7 @@ class CampaignController extends AbstractController
             return $this->redirectToRoute('campaign');
         }
 
-        // Avoid proxy-loading so we can auto-inject the file into the entity
-        if ($realSendingList instanceof Proxy) {
-            $realSendingList->__load();
-        }
-        $file = $realSendingList->getFile();
-
+        $file = $serviceSendingList->getFile($realSendingList);
         $columns = $file ? $serviceCSV->getColumns($file->getContent()) : [];
 
         return $this->render('campaign/new-two.html.twig', [
@@ -109,5 +114,33 @@ class CampaignController extends AbstractController
             'entry' => $campaign,
             'columns' => $columns
         ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    #[Route('/campaign/{id}/send', name: 'sending_list_send', methods: ['GET'])]
+    public function send(Campaign $campaign, ServiceCSV $serviceCSV, ServiceSendingList $serviceSendingList, ServiceClickatell $serviceClickatell): Response
+    {
+        $file = $serviceSendingList->getFile($campaign->getSendingList());
+
+        if(!$file) {
+            throw new NotFoundHttpException("CSV file not found");
+        }
+
+        $decoded = $serviceCSV->decodeCSV($file);
+        $test = $decoded[0];
+        $serviceClickatell->sendBulkMessage(
+            [
+                "33664550920"
+            ],
+            "TEXT MESSAGE TEST"
+        );
+
+        return $this->json("OK");
     }
 }
