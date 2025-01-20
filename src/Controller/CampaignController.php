@@ -114,33 +114,6 @@ class CampaignController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws ClientExceptionInterface
-     */
-    #[Route('/campaign/{id}/send', name: 'campaign_send', methods: ['GET'])]
-    public function send(Campaign $campaign, ServiceCSV $serviceCSV, ServiceSendingList $serviceSendingList, ServiceClickatell $serviceClickatell): Response
-    {
-        $file = $serviceSendingList->getFile($campaign->getSendingList());
-
-        if(!$file) {
-            throw new NotFoundHttpException("CSV file not found");
-        }
-
-        $decoded = $serviceCSV->decodeCSV($file);
-        $phones = array_map(fn($value): int => $value['phone'], $decoded);
-
-        $serviceClickatell->sendBulkMessage(
-            $phones,
-            "TEXT MESSAGE TEST"
-        );
-
-        return $this->json("OK");
-    }
-
     #[Route('/campaign/{id}/delete', name: 'campaign_delete', methods: ['GET'])]
     public function delete(Campaign $campaign, EntityManagerInterface $entityManager): Response
     {

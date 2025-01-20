@@ -25,7 +25,7 @@ services:
             $apiUser: '%env(CLICKATELL_API_USER)%'
             $apiPassword: '%env(CLICKATELL_API_PASSWORD)%'
             $apiKey: '%env(CLICKATELL_API_KEY)%'
-            $baseUrl: 'https://api.clickatell.com/rest'
+            $baseUrl: 'https://api.clickatell.com'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

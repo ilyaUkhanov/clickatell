@@ -5,12 +5,6 @@ namespace App\Entity;
 use App\Repository\CampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-enum State: string {
-    case Pending = 'pending';
-    case Launched = 'launched';
-    case Cancelled = 'cancelled';
-}
-
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
 class Campaign
 {

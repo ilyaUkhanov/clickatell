@@ -42,9 +42,9 @@ class ServiceClickatell
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function sendBulkMessage(array $to, string $message, bool $binary = false): array
+    public function sendMessage(array $to, string $message, bool $binary = false): array
     {
-        $url = $this->baseUrl . '/message';
+        $url = $this->baseUrl . '/rest/message';
 
         $response = $this->httpClient->request('POST', $url, [
             'headers' => [
@@ -56,6 +56,36 @@ class ServiceClickatell
             'json' => [
                 'text' => $message,
                 'to' => $to
+            ],
+        ]);
+
+        return $response->toArray();
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    public function sendBulkMessage(array $messages, bool $binary = false): array
+    {
+        $url = $this->baseUrl . '/messages/rest/bulk';
+
+        $response = $this->httpClient->request('POST', $url, [
+            'headers' => [
+                'X-Version' => 1,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->apiKey,
+            ],
+            'json' => [
+                'messageList' => array_map(fn($mess) => [
+                    'content' => $mess['content'],
+                    'to' => $mess['to'],
+                    'binary' => $binary
+                ], $messages)
             ],
         ]);
 
