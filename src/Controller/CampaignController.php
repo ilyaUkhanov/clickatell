@@ -123,7 +123,7 @@ class CampaignController extends AbstractController
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    #[Route('/campaign/{id}/send', name: 'sending_list_send', methods: ['GET'])]
+    #[Route('/campaign/{id}/send', name: 'campaign_send', methods: ['GET'])]
     public function send(Campaign $campaign, ServiceCSV $serviceCSV, ServiceSendingList $serviceSendingList, ServiceClickatell $serviceClickatell): Response
     {
         $file = $serviceSendingList->getFile($campaign->getSendingList());
@@ -133,13 +133,20 @@ class CampaignController extends AbstractController
         }
 
         $decoded = $serviceCSV->decodeCSV($file);
-        $test = $decoded[0];
+        $phones = array_map(fn($value): int => $value['phone'], $decoded);
+
         $serviceClickatell->sendBulkMessage(
-            [
-                "33664550920"
-            ],
+            $phones,
             "TEXT MESSAGE TEST"
         );
+
+        return $this->json("OK");
+    }
+
+    #[Route('/campaign/{id}', name: 'campaign_delete', methods: ['DELETE'])]
+    public function delete(Campaign $campaign, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($campaign);
 
         return $this->json("OK");
     }

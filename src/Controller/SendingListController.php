@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Campaign;
 use App\Repository\SendingListRepository;
 use App\Service\ServiceCSV;
 use App\Service\ServiceSMS;
@@ -82,5 +83,13 @@ class SendingListController extends AbstractController
     public function openSendingListFile(SendingList $sendingList, DownloadHandler $downloadHandler): Response
     {
         return $downloadHandler->downloadObject($sendingList, 'file', null, true, false);
+    }
+
+    #[Route('/sending-list/{id}', name: 'sending_list_delete', methods: ['DELETE'])]
+    public function delete(Campaign $campaign, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($campaign);
+
+        return $this->json("OK");
     }
 }

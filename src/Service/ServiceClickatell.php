@@ -59,9 +59,6 @@ class ServiceClickatell
             ],
         ]);
 
-        dump($response);
-        dump($response->toArray());
-
         return $response->toArray();
     }
 }
