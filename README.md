@@ -1,9 +1,13 @@
-# Symfony Docker
+# Mise en place du projet
+- cp .env .env.prod.local
+- changer les valeurs variables dans .env.prod.local 
+- docker compose build --no-cache
+- SERVER_NAME=clickatell.ilya-ukhanov.fr \
+  APP_SECRET=ChangeMe \
+  CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
+  docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
+- docker compose exec php composer install
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
-with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) inside!
-
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
 
 ## Getting Started
 
