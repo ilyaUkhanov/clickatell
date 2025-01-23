@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Campaign;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,20 +17,21 @@ class CampaignRepository extends ServiceEntityRepository
         parent::__construct($registry, Campaign::class);
     }
 
-    //    /**
-    //     * @return Campaign[] Returns an array of Campaign objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return Campaign[] Returns an array of Campaign objects
+         */
+        public function findActiveForDate(DateTime $date = new DateTime()): array
+        {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.dateStart <= :date')
+                ->andWhere('c.dateEnd >= :date')
+                ->setParameter('date', $date)
+                ->orderBy('c.id', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?Campaign
     //    {

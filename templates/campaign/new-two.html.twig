@@ -25,10 +25,15 @@
             {% endfor %}
         </div>
 
-        <div class="flex mb-6">
+        <div class="flex">
             {{ form_row(form.state) }}
         </div>
 
+        <div class="mb-6">
+            {{ form_row(form.dateStart) }}
+            {{ form_row(form.dateEnd) }}
+        </div>
+    
         {{ form_row(form.submit) }}
     {{ form_end(form) }}
 {% endblock %}

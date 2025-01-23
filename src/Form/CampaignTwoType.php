@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Campaign;
 use App\Entity\State;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -34,6 +35,8 @@ class CampaignTwoType extends AbstractType
                     new NotBlank(),
                 ]
             ],)
+            ->add('dateStart', DateTimeType::class)
+            ->add('dateEnd', DateTimeType::class)
             ->add('submit', SubmitType::class)
         ;
     }

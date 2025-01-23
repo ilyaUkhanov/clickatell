@@ -7,7 +7,6 @@ use App\Form\CampaignOneType;
 use App\Form\CampaignTwoType;
 use App\Repository\CampaignRepository;
 use App\Repository\SendingListRepository;
-use App\Service\ServiceClickatell;
 use App\Service\ServiceCSV;
 use App\Service\ServiceSendingList;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,11 +16,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class CampaignController extends AbstractController
 {
