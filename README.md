@@ -1,10 +1,11 @@
 # Mise en place du projet
 - cp .env .env.local
+- Dans .env.local, mettre env=prod et fournir les clefs API clickatell
 - docker compose build --no-cache
 - SERVER_NAME=clickatell.ilya-ukhanov.fr \
   APP_SECRET=123456 \
   CADDY_MERCURE_JWT_SECRET=123456 \
-- docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
+  docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
 - docker compose exec php apt update
 - docker compose exec php apt install nodejs npm -y
 - docker compose exec php npm install --force
@@ -12,6 +13,10 @@
 
 Commande pour tester l'envoi des Campagnes publicitaires :
 - docker compose exec php bin/console app:advance
+
+S'il y a eu des changements dans le code, clear le cache et rebuild webpack :
+- docker compose exec php bin/console c:c
+- docker compose exec php npm run build
 
 ## Getting Started
 

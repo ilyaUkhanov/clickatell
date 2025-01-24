@@ -4,9 +4,12 @@ framework:
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true
-
+    
     #esi: true
     #fragments: true
+    
+    assets:
+        version: '1.0.1'
 
 when@test:
     framework:
