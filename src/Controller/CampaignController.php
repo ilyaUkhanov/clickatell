@@ -81,11 +81,14 @@ class CampaignController extends AbstractController
                              ServiceCSV $serviceCSV, ServiceSendingList $serviceSendingList): Response
     {
         /** @var Campaign $campaign */
-        $campaign = $this->requestStack->getSession()->get('campaign-form-stage-one');
-        if(!$campaign) return $this->redirectToRoute('campaign');
-        if($campaign->getId()) $campaign = $campaignRepository->find($campaign->getId());
+        $sessionCampaign = $this->requestStack->getSession()->get('campaign-form-stage-one');
+        $campaign = $sessionCampaign;
 
-        $realSendingList = $sendingListRepository->find($campaign->getSendingList()->getId());
+        if(!$sessionCampaign) return $this->redirectToRoute('campaign');
+        if($sessionCampaign->getId()) $campaign = $campaignRepository->find($sessionCampaign->getId());
+
+        $realSendingList = $sendingListRepository->find($sessionCampaign->getSendingList()->getId());
+        $campaign->setSendingList($realSendingList);
 
         $form = $this->createForm(CampaignTwoType::class, $campaign);
         $form->handleRequest($request);
