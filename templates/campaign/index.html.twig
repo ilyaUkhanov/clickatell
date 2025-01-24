@@ -32,9 +32,8 @@
             </div>
             <div>
                 <button class="btn btn-primary h-10">See</button>
-                <button id="btn-delete"
-                        data-href="{{ path('campaign_delete', { 'id': entry.id }) }}"
-                        class="btn btn-danger h-10">
+                <button data-href="{{ path('campaign_delete', { 'id': entry.id }) }}"
+                        class="btn btn-danger h-10 btn-delete">
                     {{ ux_icon('ion:trash-outline', {class: 'w-4 h-4'}) }}
                 </button>
             </div>

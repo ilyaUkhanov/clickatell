@@ -3,12 +3,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 function init() {
-  const button = document.getElementById('btn-delete');
-  
-  button.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const buttons = document.getElementsByClassName('btn-delete');
 
-    window.location.href = button.dataset.href;
-  })
+  for(let button of buttons) {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      window.location.href = button.dataset.href;
+    })
+  }
 }
