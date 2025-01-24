@@ -1,13 +1,17 @@
 # Mise en place du projet
-- cp .env .env.prod.local
-- changer les valeurs variables dans .env.prod.local 
+- cp .env .env.local
 - docker compose build --no-cache
 - SERVER_NAME=clickatell.ilya-ukhanov.fr \
-  APP_SECRET=ChangeMe \
-  CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
-  docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
-- docker compose exec php composer install
+  APP_SECRET=123456 \
+  CADDY_MERCURE_JWT_SECRET=123456 \
+- docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
+- docker compose exec php apt update
+- docker compose exec php apt install nodejs npm -y
+- docker compose exec php npm install --force
+- docker compose exec php npm run build
 
+Commande pour tester l'envoi des Campagnes publicitaires :
+- docker compose exec php bin/console app:advance
 
 ## Getting Started
 
