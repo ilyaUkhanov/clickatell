@@ -43,7 +43,7 @@ class ServiceCSV
         $data = $file->getContent();
         $cleanData = $this->cleanupCSV($data);
         $encoder = new CsvEncoder([
-            CsvEncoder::DELIMITER_KEY => $this->detectDelimiter($file),
+            CsvEncoder::DELIMITER_KEY => $this->detectDelimiter($data),
         ]);
         $serializer = new Serializer([new ObjectNormalizer()], [$encoder]);
         $decodedData = $serializer->decode($cleanData, 'csv');

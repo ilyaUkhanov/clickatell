@@ -57,6 +57,7 @@ class ServiceCampaign
             }
             catch (Exception $exception) {
                 $campaign->setCursor($index);
+                $campaign->setState(State::Cancelled);
                 $this->entityManager->persist($campaign);
                 $this->entityManager->flush();
 
