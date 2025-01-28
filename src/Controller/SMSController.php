@@ -11,8 +11,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SMSController extends AbstractController
 {
-    #[Route('/messages/callback', name: 'app_sms')]
-    public function index(EntityManagerInterface $em, BannedRepository $repository): Response
+    #[Route('/messages/callback', name: 'app_sms', methods: ['POST'])]
+    public function callback(EntityManagerInterface $em, BannedRepository $repository): Response
     {
         $banned = new Banned();
         $banned->setPhone("33664550920");
@@ -21,6 +21,13 @@ class SMSController extends AbstractController
 
         $all = $repository->findAll();
 
+        return $this->json([ $all ]);
+    }
+
+    #[Route('/messages/callback', name: 'app_sms', methods: ['GET'])]
+    public function callbackView(EntityManagerInterface $em, BannedRepository $repository): Response
+    {
+        $all = $repository->findAll();
         return $this->json([ $all ]);
     }
 }
