@@ -63,7 +63,7 @@
     <h1 class="h3 mb-3">Schedule</h1>
     <div class="flex flex-col justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6 w-1/2">
         {% for date in metadata.dates %}
-            <div class="grid grid-cols-2 col-span-3 mb-2 border border-slate-100 rounded-md bg-gray-50 px-3 py-1 {% if date.passed %} bg-amber-50 {% endif %}">
+            <div class="grid grid-cols-2 col-span-3 mb-2 border border-slate-100 rounded-md bg-gray-50 px-3 py-1 {% if date.passed %} !bg-amber-50 {% endif %}">
                 <div>Date</div>
                 <div class="flex justify-end">{{ date.date|date("F d, Y") }}</div>
                 <div>Clients covered</div>
