@@ -13,6 +13,7 @@
 
 {% block body %}
     {{ parent() }}
+
     <div class="flex justify-between mb-6">
         <h1 class="h1">{% if entry.id and entry.name %}Campaign - {{ entry.name }} {% endif %}</h1>
         <a href="{{ path('campaign_edit_one', {'id': entry.id}) }}" class="btn pb-0 h-10 btn-primary">Edit</a>
@@ -21,6 +22,12 @@
     <h1 class="h3 mb-3">Sending list</h1>
     <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
         {{ entry.sendingList.name }}
+    </div>
+
+    <h1 class="h3 mb-3">Template</h1>
+    <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
+        {{ entry.template }}
+        {% if entry.template is null %}No template defined{% endif %}
     </div>
 
     <h1 class="h3">State</h1>
@@ -33,10 +40,38 @@
         </span>
     </div>
 
-    <h1 class="h3 mb-3">Template</h1>
-    <div class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
-        {{ entry.template }}
-        {% if entry.template is null %}No template defined{% endif %}
+    <h1 class="h3">Clients covered</h1>
+    <div class="mb-3">
+        {% set cursor = metadata.cursor %}
+        {% if cursor < 0 %} {% set cursor = 0 %} {% endif %}
+        <div>Sent <span class="text-yellow-600">{{ cursor }}</span></div>
+        <div>from total <span class="text-blue-500">{{ metadata.total }}</span></div>
     </div>
+
+    <h1 class="h3 mb-3">Dates</h1>
+    <div class="flex flex-col justify-between w-1/2 p-3 bg-gray-100 border-slate-100 border rounded-md mb-6">
+        <div class="grid grid-cols-2 col-span-3 mb-2 border border-slate-100 rounded-md bg-gray-50 px-3 py-2">
+            <div>Start</div>
+            <div class="flex justify-end text-blue-500">{{ entry.dateStart|date("F d, Y") }}</div>
+        </div>
+        <div class="grid grid-cols-2 col-span-3 mb-2 border border-slate-100 rounded-md bg-gray-50 px-3 py-2">
+            <div>End</div>
+            <div class="flex justify-end text-blue-500">{{ entry.dateEnd|date("F d, Y") }}</div>
+        </div>
+    </div>
+
+    <h1 class="h3 mb-3">Schedule</h1>
+    <div class="flex flex-col justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-6 w-1/2">
+        {% for date in metadata.dates %}
+            <div class="grid grid-cols-2 col-span-3 mb-2 border border-slate-100 rounded-md bg-gray-50 px-3 py-1 {% if date.passed %} bg-amber-50 {% endif %}">
+                <div>Date</div>
+                <div class="flex justify-end">{{ date.date|date("F d, Y") }}</div>
+                <div>Clients covered</div>
+                <div class="flex justify-end">{{ date.cursor }} / {{ metadata.total }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+
 
 {% endblock %}

@@ -7,6 +7,7 @@ use App\Form\CampaignOneType;
 use App\Form\CampaignTwoType;
 use App\Repository\CampaignRepository;
 use App\Repository\SendingListRepository;
+use App\Service\ServiceCampaign;
 use App\Service\ServiceCSV;
 use App\Service\ServiceSendingList;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,16 +27,23 @@ class CampaignController extends AbstractController
     }
 
     #[Route('/campaign', name: 'campaign')]
-    public function index(CampaignRepository $repository): Response
+    public function index(CampaignRepository $repository, ServiceCampaign $serviceCampaign): Response
     {
+        $campaigns = $repository->findAll();
+        $metadata = [];
+        foreach ($campaigns as $campaign) {
+            $metadata[$campaign->getId()] = $serviceCampaign->getCampaignMetadata($campaign);
+        }
+
         return $this->render('campaign/index.html.twig', [
             'controller_name' => 'CampaignController',
-            'campaigns' => $repository->findAll()
+            'campaigns' => $repository->findAll(),
+            'metadata' => $metadata,
         ]);
     }
 
     #[Route('/campaign/{id}/view', name: 'campaign_view')]
-    public function view($id, CampaignRepository $repository, ServiceCSV $serviceCSV): Response
+    public function view($id, CampaignRepository $repository, ServiceCampaign $serviceCampaign, ServiceCSV $serviceCSV): Response
     {
         $campaign = $repository->find($id);
         $file = $campaign->getSendingList()->getFile();
@@ -44,7 +52,8 @@ class CampaignController extends AbstractController
         return $this->render('campaign/view.html.twig', [
             'controller_name' => 'CampaignController',
             'entry' => $campaign,
-            'columns' => $columns
+            'columns' => $columns,
+            'metadata' => $serviceCampaign->getCampaignMetadata($campaign),
         ]);
     }
 

@@ -19,23 +19,34 @@
     </div>
 
     {% for entry in campaigns %}
+        {% set cursor = metadata[entry.id].cursor %}
+        {% if cursor < 0 %} {% set cursor = 0 %} {% endif %}
+
         <a href="{{ path('campaign_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
-            <div class="">
-                <p class="h3 text-slate-800">{{ entry.name }}</p>
-                <span>State : </span>
-                <span class="text-slate-800 {% if entry.state.value == 'pending' %} !text-yellow-500
-                                            {% elseif entry.state.value == 'cancelled' %} !text-red-500
-                                            {% elseif entry.state.value == 'finished' %} !text-green-500
-                                            {% elseif entry.state.value == 'launched' %} !text-blue-500 {% endif %}">
-                    {{ entry.state.value }}
-                </span>
+            <div class="w-full flex flex-column justify-between mr-2">
+                <p class="h3 text-slate-800 mb-2">{{ entry.name }}</p>
+
+                <div class="flex justify-between items-center w-full">
+                    <div class="">
+                        <span>State : </span>
+                        <span class="text-slate-800 {% if entry.state.value == 'pending' %} !text-yellow-500
+                                                {% elseif entry.state.value == 'cancelled' %} !text-red-500
+                                                {% elseif entry.state.value == 'finished' %} !text-green-500
+                                                {% elseif entry.state.value == 'launched' %} !text-blue-500 {% endif %}">
+                            {{ entry.state.value }}
+                        </span>
+                    </div>
+                </div>
+
             </div>
-            <div>
-                <button class="btn btn-primary h-10">See</button>
+            <div class="flex flex-col items-end w-max min-w-max">
                 <button data-href="{{ path('campaign_delete', { 'id': entry.id }) }}"
-                        class="btn btn-danger h-10 btn-delete">
+                        class="btn btn-danger h-10 btn-delete mb-2">
                     {{ ux_icon('ion:trash-outline', {class: 'w-4 h-4'}) }}
                 </button>
+                <div>
+                    {{ cursor }} / {{ metadata[entry.id].total }}
+                </div>
             </div>
         </a>
     {% endfor %}

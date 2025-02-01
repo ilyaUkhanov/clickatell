@@ -4,8 +4,12 @@ namespace App\Service;
 
 use App\Entity\Campaign;
 use App\Entity\State;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -19,14 +23,18 @@ class ServiceCampaign
     public ServiceCSV $serviceCSV;
     public ServiceClickatell $serviceClickatell;
     public EntityManagerInterface $entityManager;
+    public Logger $logger;
+
+    const STEP = 100;
 
     public function __construct(ServiceSendingList $serviceSendingList, ServiceCSV $serviceCSV,
-                                ServiceClickatell $serviceClickatell, EntityManagerInterface $entityManager)
+                                ServiceClickatell $serviceClickatell, EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         $this->serviceSendingList = $serviceSendingList;
         $this->serviceCSV = $serviceCSV;
         $this->serviceClickatell = $serviceClickatell;
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
     }
 
     /**
@@ -35,6 +43,7 @@ class ServiceCampaign
      * @throws RedirectionExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws DateMalformedStringException
      */
     public function advanceCampaign(Campaign $campaign): void
     {
@@ -46,8 +55,22 @@ class ServiceCampaign
 
         $decoded = $this->serviceCSV->decodeCSV($file);
         $columns = $this->serviceCSV->getColumns($file->getContent());
+        $metadata = $this->getCampaignMetadata($campaign);
+        $currentSchedule = $metadata['dates'][0];
+        $now = new DateTime("now");
 
-        foreach ($decoded as $index => $row) {
+        foreach ($metadata['dates'] as $schedule) {
+            $date = new DateTime($schedule['date']);
+            if($now > $date) {
+                $currentSchedule = $schedule;
+            }
+        }
+
+        $nextCursor = min(($campaign->getCursor() + ServiceCampaign::STEP), $metadata['total'], $currentSchedule['cursor'] );
+
+        for($index = $campaign->getCursor(); $index < $nextCursor; ++$index) {
+            $row = $decoded[$index];
+
             try {
                 $template = $campaign->getTemplate();
                 foreach ($columns as $column) {
@@ -65,10 +88,52 @@ class ServiceCampaign
             }
         }
 
-        $campaign->setCursor(-1);
-        $campaign->setState(State::Finished);
+        if($nextCursor >= $metadata['total']) {
+            $campaign->setCursor(-1);
+            $campaign->setState(State::Finished);
+        }
+        else {
+            $campaign->setCursor($nextCursor);
+            $this->entityManager->persist($campaign);
+            $this->entityManager->flush();
+        }
 
         $this->entityManager->persist($campaign);
         $this->entityManager->flush();
+    }
+
+    public function getCampaignMetadata(Campaign $campaign): array
+    {
+        $sendNumberOfTimes = 5;
+        $total = $this->serviceSendingList->getNumberLines($campaign->getSendingList());
+        $totalCampaignDays = $campaign->getDateEnd()->diff($campaign->getDateStart())->format("%a");
+
+        $dates = [];
+        $date = clone $campaign->getDateStart();
+        $dateCursor = 0;
+        $now = new DateTime('now');
+
+        for($i = 0; $i < $sendNumberOfTimes; $i++) {
+            $dateCursor = $dateCursor + floor($total / $sendNumberOfTimes) + 1;
+            $dateCursor = min($dateCursor, $total);
+
+            $dates[$i] = [
+                'date' => $date->format('Y-m-d'),
+                'cursor' => $dateCursor,
+                'passed' => $now > $date
+            ];
+
+            $addDays = floor($totalCampaignDays / $sendNumberOfTimes) + 1;
+            $date->modify("+$addDays day");
+            if($date > $campaign->getDateEnd()) {
+                $date = clone $campaign->getDateEnd();
+            }
+        }
+
+        return [
+            'cursor' => $campaign->getCursor(),
+            'total' => $total,
+            'dates' => $dates
+        ];
     }
 }
