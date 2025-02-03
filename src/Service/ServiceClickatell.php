@@ -44,8 +44,6 @@ class ServiceClickatell
      */
     public function sendMessage(array $to, string $message, bool $binary = false): array
     {
-        return [];
-
         $url = $this->baseUrl . '/rest/message';
 
         $response = $this->httpClient->request('POST', $url, [

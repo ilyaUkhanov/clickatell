@@ -89,7 +89,7 @@ class ServiceCampaign
         }
 
         if($nextCursor >= $metadata['total']) {
-            $campaign->setCursor(-1);
+            $campaign->setCursor($metadata['total']);
             $campaign->setState(State::Finished);
         }
         else {
