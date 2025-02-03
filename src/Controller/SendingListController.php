@@ -81,7 +81,7 @@ class SendingListController extends AbstractController
     #[Route('/admin/sending-list/{id}/download', name: 'admin_sending_list_download', methods: ['GET'])]
     public function openSendingListFile(SendingList $sendingList, DownloadHandler $downloadHandler): Response
     {
-        return $downloadHandler->downloadObject($sendingList, 'file', null, true);
+        return $downloadHandler->downloadObject($sendingList, 'file');
     }
 
     #[Route('/sending-list/{id}/delete', name: 'sending_list_delete', methods: ['GET'])]

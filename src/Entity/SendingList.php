@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: SendingListRepository::class)]
 #[Vich\Uploadable]
@@ -23,6 +25,7 @@ class SendingList implements Serializable
     private ?string $name = null;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
+    #[Assert\File(maxSize: "512M", mimeTypes: [ "text/csv", "text/plain" ])]
     #[Vich\UploadableField(mapping: 'sending_lists', fileNameProperty: 'fileName', size: 'fileSize')]
     private ?File $file = null;
 

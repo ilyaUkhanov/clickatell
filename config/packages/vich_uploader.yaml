@@ -8,7 +8,7 @@ vich_uploader:
         sending_lists:
             uri_prefix: /files/sending-lists
             upload_destination: "%kernel.project_dir%/public/files/sending_lists"
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            namer: App\Service\FileNamer
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true
