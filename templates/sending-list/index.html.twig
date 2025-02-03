@@ -23,7 +23,13 @@
         <a href="{{ path('sending_list_view', {'id': entry.id}) }}" class="flex justify-between p-3 bg-gray-100 border-slate-100 border rounded-md mb-3">
             <p class="h3 text-slate-800">{{ entry.name }}</p>
             <div>
-                <button class="btn btn-primary">See</button>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <button data-href="{{ path('admin_sending_list_download', { 'id': entry.id }) }}"
+                            class="btn !bg-gray-200 h-10 btn-delete">
+                        {{ ux_icon('ion:download-outline', {class: 'w-4 h-4'}) }}
+                    </button>
+                {% endif %}
+                <button class="btn btn-primary mr-3">See</button>
                 <button data-href="{{ path('sending_list_delete', { 'id': entry.id }) }}"
                         class="btn btn-danger h-10 btn-delete">
                     {{ ux_icon('ion:trash-outline', {class: 'w-4 h-4'}) }}

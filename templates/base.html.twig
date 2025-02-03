@@ -14,10 +14,23 @@
     </head>
     <body>
         <nav>
-            <div class="flex w-full p-3 !pl-10 bg-slate-700">
-                <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Home</a>
-                <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Sending lists</a>
-                <a href="{{ path('campaign') }}" class="btn btn-dark block mr-2">Campaigns</a>
+            <div class="flex w-full p-3 !pl-10 bg-slate-700 justify-between">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <div class="flex">
+                        <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Home</a>
+                        <a href="{{ path('sending_list') }}" class="btn btn-dark block mr-2">Sending lists</a>
+                        a<a href="{{ path('campaign') }}" class="btn btn-dark block mr-2">Campaigns</a>
+                    </div>
+                {% endif %}
+
+
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-dark block mr-2">Logout</a>
+                {% endif %}
+
+                {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="{{ path('app_login') }}" class="btn btn-dark block mr-2">Login</a>
+                {% endif %}
             </div>
         </nav>
         <div class="p-10">
