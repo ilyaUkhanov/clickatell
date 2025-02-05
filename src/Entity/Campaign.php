@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\CampaignRepository;
 use DateInterval;
+use DateInvalidTimeZoneException;
+use DateTimeInterface;
+use DateTimeZone;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,13 +32,16 @@ class Campaign
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    private ?\DateTimeInterface $dateStart = null;
+    private ?DateTimeInterface $dateStart = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    private ?\DateTimeInterface $dateEnd = null;
+    private ?DateTimeInterface $dateEnd = null;
 
     #[ORM\Column]
     private ?int $cursor = 0;
+
+    #[ORM\Column(length: 255)]
+    private ?string $timezone = null;
 
     public function __construct()
     {
@@ -106,24 +112,30 @@ class Campaign
         $this->state = $state;
     }
 
-    public function getDateStart(): ?\DateTimeInterface
+    /**
+     * @throws DateInvalidTimeZoneException
+     */
+    public function getDateStart(): ?DateTimeInterface
     {
         return $this->dateStart;
     }
 
-    public function setDateStart(\DateTimeInterface $dateStart): static
+    public function setDateStart(DateTimeInterface $dateStart): static
     {
         $this->dateStart = $dateStart;
 
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTimeInterface
+    /**
+     * @throws DateInvalidTimeZoneException
+     */
+    public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(\DateTimeInterface $dateEnd): static
+    public function setDateEnd(DateTimeInterface $dateEnd): static
     {
         $this->dateEnd = $dateEnd;
 
@@ -138,6 +150,18 @@ class Campaign
     public function setCursor(int $cursor): static
     {
         $this->cursor = $cursor;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): static
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

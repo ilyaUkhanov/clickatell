@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Campaign;
 use App\Entity\State;
+use DateInvalidTimeZoneException;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,9 +45,15 @@ class ServiceCampaign
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      * @throws DateMalformedStringException
+     * @throws DateInvalidTimeZoneException
      */
     public function advanceCampaign(Campaign $campaign): void
     {
+        dump($campaign->getDateStart());
+        dump($campaign->getDateEnd());
+
+//        return;
+
         $file = $this->serviceSendingList->getFile($campaign->getSendingList());
 
         if(!$file) {
@@ -60,7 +67,7 @@ class ServiceCampaign
         $now = new DateTime("now");
 
         foreach ($metadata['dates'] as $schedule) {
-            $date = new DateTime($schedule['date']);
+            $date = $schedule['date'];
             if($now > $date) {
                 $currentSchedule = $schedule;
             }
@@ -102,6 +109,9 @@ class ServiceCampaign
         $this->entityManager->flush();
     }
 
+    /**
+     * @throws DateInvalidTimeZoneException
+     */
     public function getCampaignMetadata(Campaign $campaign): array
     {
         $sendNumberOfTimes = 5;
@@ -118,7 +128,7 @@ class ServiceCampaign
             $dateCursor = min($dateCursor, $total);
 
             $dates[$i] = [
-                'date' => $date->format('Y-m-d'),
+                'date' => clone $date,
                 'cursor' => $dateCursor,
                 'passed' => $now > $date
             ];
