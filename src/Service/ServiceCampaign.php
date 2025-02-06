@@ -7,9 +7,9 @@ use App\Entity\State;
 use DateInvalidTimeZoneException;
 use DateMalformedStringException;
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -24,7 +24,7 @@ class ServiceCampaign
     public ServiceCSV $serviceCSV;
     public ServiceClickatell $serviceClickatell;
     public EntityManagerInterface $entityManager;
-    public Logger $logger;
+    public LoggerInterface $logger;
 
     const STEP = 100;
 
@@ -55,6 +55,29 @@ class ServiceCampaign
             throw new NotFoundHttpException("CSV file not found");
         }
 
+        $now = new DateTime('now');
+        $now->setTimezone(new DateTimeZone($campaign->getTimezone()));
+
+        // Send between 9am and 8pm only
+        $minimumTime = DateTime::createFromFormat('U', time());
+        $minimumTime->setTimezone(new DateTimeZone($campaign->getTimezone()));
+        $minimumTime->setTime(9, 0);
+
+        $maximumTime = clone $now;
+        $maximumTime->setTimezone(new DateTimeZone($campaign->getTimezone()));
+        $maximumTime->setTime(20, 0);
+
+        if($now < $minimumTime) {
+            $this->logger->log("info", "It's earlier than 9am");
+            return;
+        }
+
+        if($now > $maximumTime) {
+            $this->logger->log("info", "It's later than 8pm");
+            return;
+        }
+
+        // Get campaign metadata
         $decoded = $this->serviceCSV->decodeCSV($file);
         $columns = $this->serviceCSV->getColumns($file->getContent());
         $metadata = $this->getCampaignMetadata($campaign);
