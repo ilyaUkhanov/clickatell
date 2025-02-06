@@ -47,8 +47,11 @@ class Campaign
     {
         $this->cursor = 0;
         $this->dateStart = new \DateTimeImmutable();
+        $this->dateStart->setTime(9,0);
+
         $this->dateEnd = new \DateTimeImmutable();
         $this->dateEnd = $this->dateEnd->add(new DateInterval('P7D'));
+        $this->dateEnd->setTime(20, 0, 0);
     }
 
 
