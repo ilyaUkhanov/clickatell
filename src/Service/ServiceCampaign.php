@@ -67,7 +67,9 @@ class ServiceCampaign
         $now = new DateTime("now");
 
         foreach ($metadata['dates'] as $schedule) {
-            $date = $schedule['date'];
+            $date = clone $schedule['date'];
+            dump("DATE");
+            dump($date);
             if($now > $date) {
                 $currentSchedule = $schedule;
             }
@@ -116,10 +118,10 @@ class ServiceCampaign
     {
         $sendNumberOfTimes = 5;
         $total = $this->serviceSendingList->getNumberLines($campaign->getSendingList());
-        $totalCampaignDays = $campaign->getDateEnd()->diff($campaign->getDateStart())->format("%a");
+        $totalCampaignDays = $campaign->getDateEndTimezone()->diff($campaign->getDateStartTimezone())->format("%a");
 
         $dates = [];
-        $date = clone $campaign->getDateStart();
+        $date = clone $campaign->getDateStartTimezone();
         $dateCursor = 0;
         $now = new DateTime('now');
 
@@ -135,8 +137,8 @@ class ServiceCampaign
 
             $addDays = floor($totalCampaignDays / $sendNumberOfTimes) + 1;
             $date->modify("+$addDays day");
-            if($date > $campaign->getDateEnd()) {
-                $date = clone $campaign->getDateEnd();
+            if($date > $campaign->getDateEndTimezone()) {
+                $date = clone $campaign->getDateEndTimezone();
             }
         }
 

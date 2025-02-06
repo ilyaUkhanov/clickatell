@@ -113,12 +113,24 @@ class Campaign
     }
 
     /**
-     * @throws DateInvalidTimeZoneException
      */
     public function getDateStart(): ?DateTimeInterface
     {
         return $this->dateStart;
     }
+
+    /**
+     * @throws DateInvalidTimeZoneException
+     */
+    public function getDateStartTimezone(): ?DateTimeInterface
+    {
+        $realDate = clone $this->dateStart;
+        $realDate->setTimezone(new DateTimeZone($this->timezone));
+        $realDate->setTime($this->dateStart->format('H'), $this->dateStart->format('i'), 0);
+
+        return $realDate;
+    }
+
 
     public function setDateStart(DateTimeInterface $dateStart): static
     {
@@ -133,6 +145,18 @@ class Campaign
     public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
+    }
+
+    /**
+     * @throws DateInvalidTimeZoneException
+     */
+    public function getDateEndTimezone(): ?DateTimeInterface
+    {
+        $realDate = clone $this->dateEnd;
+        $realDate->setTimezone(new DateTimeZone($this->timezone));
+        $realDate->setTime($this->dateEnd->format('H'), $this->dateEnd->format('i'), 0);
+
+        return $realDate;
     }
 
     public function setDateEnd(DateTimeInterface $dateEnd): static
