@@ -49,11 +49,6 @@ class ServiceCampaign
      */
     public function advanceCampaign(Campaign $campaign): void
     {
-        dump($campaign->getDateStart());
-        dump($campaign->getDateEnd());
-
-//        return;
-
         $file = $this->serviceSendingList->getFile($campaign->getSendingList());
 
         if(!$file) {
