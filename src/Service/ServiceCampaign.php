@@ -63,8 +63,6 @@ class ServiceCampaign
 
         foreach ($metadata['dates'] as $schedule) {
             $date = clone $schedule['date'];
-            dump("DATE");
-            dump($date);
             if($now > $date) {
                 $currentSchedule = $schedule;
             }
