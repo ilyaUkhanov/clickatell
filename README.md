@@ -10,6 +10,8 @@
 - docker compose exec php apt install nodejs npm -y
 - docker compose exec php npm install --force
 - docker compose exec php npm run build
+- docker compose exec php doctrine:migrations:diff
+- docker compose exec php doctrine:migrations:migrate
 
 Commande pour tester l'envoi des Campagnes publicitaires :
 - docker compose exec php bin/console app:advance

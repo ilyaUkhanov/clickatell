@@ -1,12 +1,17 @@
 
 ###> symfony/framework-bundle ###
 /.env.local
+/.env
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
+/migrations
+/caddy_data
+/database_data
+/caddy_config
 ###< symfony/framework-bundle ###
 
 ###> symfony/webpack-encore-bundle ###
